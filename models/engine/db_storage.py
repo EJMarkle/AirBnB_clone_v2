@@ -70,5 +70,4 @@ class DBStorage():
 
     def close(self):
         """calls reload for json"""
-        self.__session.remove()
-        self.reload()
+        self.__session.close()
