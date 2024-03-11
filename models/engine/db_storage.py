@@ -63,11 +63,10 @@ class DBStorage():
 
     def reload(self):
         """reloads from the db"""
-        if self.__session is None or self.__session.is_active:
-            Base.metadata.create_all(self.__engine)
-            sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
-            Session = scoped_session(sess_factory)
-            self.__session = Session
+        Base.metadata.create_all(self.__engine)
+        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess_factory)
+        self.__session = Session
 
     def close(self):
         """calls reload for json"""
