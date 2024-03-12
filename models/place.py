@@ -15,7 +15,7 @@ from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 
 
-ssociation_table = Table("place_amenity", Base.metadata,
+association_table = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
                                  ForeignKey("places.id"),
                                  primary_key=True, nullable=False),
@@ -23,7 +23,7 @@ ssociation_table = Table("place_amenity", Base.metadata,
                                  ForeignKey("amenities.id"),
                                  primary_key=True, nullable=False))
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
@@ -37,8 +37,7 @@ class Place(BaseModel):
     latitude = Column(Float)
     longitude = Column(Float)
     reviews = relationship("Review", backref="place", cascade="delete")
-    amenities = relationship("Amenity", secondary="place_amenity",
-                             viewonly=False)
+    amenities = relationship("Amenity", secondary="place_amenity", back_populates="place_amenities")
     amenity_ids = []
 
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
@@ -65,3 +64,4 @@ class Place(BaseModel):
             """ The setter method for linked Amenities, using FileStorage """
             if type(value) is Amenity:
                 self.amenity_ids.append(value.id)
+                self.amenities.append(value)
